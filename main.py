@@ -14,7 +14,7 @@ cr = csv.reader(response)
     #for row in cr:
     #    print row
 
-# Lets feed the response into a pandas dataframe (might take awhile to initially populate)
+# Lets feed the response into a pandas dataframe (response could take 10-30s)
 bc = pd.read_csv(response)   
 
 # This lets me look at the first ten rows, for just the 2 columns
