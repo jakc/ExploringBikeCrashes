@@ -27,3 +27,5 @@ print crashes_by_day
 # But lets take that further and plot them
 crashes_by_day.plot(kind='bar')
 
+
+bc['ACCIDENT_DATE'].plot()
