@@ -10,7 +10,7 @@ url = 'http://vicroadsopendata.vicroadsmaps.opendata.arcgis.com/datasets/c2a6962
 response = urllib2.urlopen(url)
 cr = csv.reader(response)
 # Push the response into a Pandas data frame called bc for bike crashes
-bc = pd.read_csv(response, parse_dates=['ACCIDENT_DATE'])  
+bc = pd.read_csv(response, parse_dates=['ACCIDENT_DATE', 'ACCIDENT_TIME'])  
 
 # This lets me look at the first ten rows, for just the 2 columns
 bc[['DAY_OF_WEEK', 'TOTAL_PERSONS']][:10]
@@ -20,7 +20,41 @@ crashes_by_day = bc['DAY_OF_WEEK'].value_counts()
 print crashes_by_day
 
 # But lets take that further and plot them
-crashes_by_day.plot(kind='bar')
+#crashes_by_day.plot(kind='bar')
 
+# Add an additional column to break out the months
+bc['month'] = [t.month for t in bc.ACCIDENT_DATE]
+# Then aggregate the totals by month
+crashes_by_month = bc['month'].value_counts()
+crashes_by_month = crashes_by_month.sort_index()
+
+crashes_by_month.plot(kind='bar')
+
+
+# Convert 'ACCIDENT_TIME' from a string to a timestamp
+bc['ACCIDENT_TIME'] = pd.to_datetime(bc['ACCIDENT_TIME'], format ='%H.%M.%S')
+
+bc2 = bc.set_index('ACCIDENT_TIME')
+bc2.index.name = None
+
+# Group into one minute intervals
+crashes_by_minute = bc2.groupby(bc.ACCIDENT_TIME.map(lambda t: t.minute))
+
+
+
+######NOTES#########
 #Try to aggregate by time
-bc['ACCIDENT_DATE'].dtype
+
+#Check type of field
+bc['ACCIDENT_TIME'].dtype
+
+#bc['hour'] = [t.month for t in bc.ACCIDENT_DATE]
+
+#Group by hour
+# Set the index to the time field
+#times = pd.to_datetime(bc.
+
+#bc.set_index('ACCIDENT_TIME')
+#crashes_by_hour = bc.groupby(lamda x: 
+
+#crashes_by_hour = bc.groupby(bc.index.map(lambda t: t.minute))
